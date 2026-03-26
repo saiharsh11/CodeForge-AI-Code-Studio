@@ -1,0 +1,9 @@
+# Secret keys — NEVER commit this
+.env
+
+# Dependencies — install with npm install
+node_modules/
+
+# OS files
+.DS_Store
+Thumbs.db
