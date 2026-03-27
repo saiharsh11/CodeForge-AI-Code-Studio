@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CodeForge — AI Code Studio</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark-dimmed.min.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/python.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/rust.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/go.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/cpp.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/sql.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; background: #09090b; color: #fff; font-family: 'Inter', sans-serif; overflow: hidden; }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #27272a; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #3f3f46; }
+
+    /* Glass */
+    .glass {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.07);
+      backdrop-filter: blur(12px);
+    }
+
+    /* Gradient text */
+    .grad { background: linear-gradient(135deg,#fff 0%,#a1a1aa 50%,#6366f1 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+    .grad-purple { background: linear-gradient(135deg,#a855f7,#6366f1,#3b82f6); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+
+    /* Animated gradient button */
+    .btn-grad {
+      background: linear-gradient(135deg,#6366f1,#8b5cf6,#6366f1);
+      background-size: 200% 200%;
+      animation: gradX 4s ease infinite;
+      transition: opacity .2s, transform .2s, box-shadow .2s;
+    }
+    .btn-grad:hover { opacity:.9; transform:translateY(-1px); box-shadow:0 0 24px rgba(99,102,241,.4); }
+    .btn-grad:active { transform:translateY(0); }
+    .btn-grad:disabled { opacity:.4; cursor:not-allowed; transform:none; box-shadow:none; }
+
+    @keyframes gradX {
+      0%,100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+
+    /* Orbs */
+    .orb { position:fixed; border-radius:50%; filter:blur(80px); pointer-events:none; z-index:0; }
+
+    /* Tab */
+    .tab-btn { transition: all .2s; }
+    .tab-btn.active {
+      background: rgba(99,102,241,.15);
+      border-color: rgba(99,102,241,.4) !important;
+      color: #a5b4fc;
+    }
+
+    /* Model badge */
+    .model-badge { transition: all .2s; }
+    .model-badge.active {
+      background: rgba(99,102,241,.2);
+      border-color: rgba(99,102,241,.5) !important;
+      color: #c7d2fe;
+    }
+
+    /* Textarea */
+    textarea {
+      background: rgba(0,0,0,.3);
+      border: 1px solid rgba(255,255,255,.07);
+      color: #e4e4e7;
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      line-height: 1.6;
+      resize: none;
+      outline: none;
+      transition: border-color .2s;
+    }
+    textarea:focus { border-color: rgba(99,102,241,.5); }
+    textarea::placeholder { color: #52525b; }
+
+    /* Code area */
+    .code-wrap {
+      background: #0d0d0f;
+      border: 1px solid rgba(255,255,255,.06);
+      border-radius: 12px;
+      overflow: auto;
+      position: relative;
+    }
+    .code-wrap pre {
+      margin: 0;
+      padding: 20px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      line-height: 1.7;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+    .code-wrap pre code.hljs { background: transparent; padding: 0; }
+
+    /* Review output */
+    .review-output {
+      font-size: 14px;
+      line-height: 1.75;
+      color: #d4d4d8;
+      overflow-y: auto;
+    }
+    .review-output h1,.review-output h2,.review-output h3 { color:#fff; font-weight:600; margin: 1em 0 .4em; }
+    .review-output h1 { font-size:1.1em; }
+    .review-output h2 { font-size:1em; }
+    .review-output p { margin-bottom:.75em; }
+    .review-output ul,.review-output ol { margin: .5em 0 .75em 1.25em; }
+    .review-output li { margin-bottom:.3em; }
+    .review-output code { font-family:'JetBrains Mono',monospace; background:rgba(99,102,241,.12); border:1px solid rgba(99,102,241,.2); padding:.15em .4em; border-radius:4px; font-size:.85em; color:#a5b4fc; }
+    .review-output pre { background:#0d0d0f; border:1px solid rgba(255,255,255,.07); border-radius:8px; padding:12px 16px; margin:.5em 0 .75em; overflow-x:auto; }
+    .review-output pre code { background:transparent; border:none; padding:0; color:#e4e4e7; }
+    .review-output strong { color:#e4e4e7; font-weight:600; }
+    .review-output blockquote { border-left:3px solid rgba(99,102,241,.5); padding-left:12px; color:#71717a; margin:.5em 0; }
+    .review-output hr { border:none; border-top:1px solid rgba(255,255,255,.07); margin:1em 0; }
+
+    /* Spinner */
+    .spinner { width:16px; height:16px; border:2px solid rgba(255,255,255,.15); border-top-color:#a5b4fc; border-radius:50%; animation:spin .7s linear infinite; }
+    @keyframes spin { to { transform:rotate(360deg); } }
+
+    /* Cursor blink */
+    .cursor::after { content:'▋'; animation: blink 1s step-end infinite; color:#6366f1; }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+    /* Toast */
+    #toast {
+      position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(8px);
+      background: #18181b; border: 1px solid rgba(255,255,255,.1);
+      padding: 10px 18px; border-radius: 99px; font-size:13px; font-weight:500;
+      opacity: 0; transition: opacity .25s, transform .25s; pointer-events:none; z-index:999;
+      white-space:nowrap;
+    }
+    #toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+
+    /* Select */
+    select {
+      background: rgba(0,0,0,.4);
+      border: 1px solid rgba(255,255,255,.08);
+      color: #a1a1aa;
+      font-size: 13px;
+      padding: 6px 10px;
+      border-radius: 8px;
+      outline: none;
+      cursor: pointer;
+      transition: border-color .2s;
+      font-family: 'Inter', sans-serif;
+    }
+    select:focus { border-color:rgba(99,102,241,.5); }
+    select option { background:#18181b; }
+
+    /* Placeholder state */
+    .placeholder-state { color:#3f3f46; font-family:'JetBrains Mono',monospace; font-size:13px; }
+
+    /* Panel */
+    .panel { display:flex; flex-direction:column; gap:0; height:100%; }
+
+    /* Status dot */
+    .dot-green { width:7px; height:7px; border-radius:50%; background:#22c55e; box-shadow:0 0 6px #22c55e; }
+    .dot-yellow { width:7px; height:7px; border-radius:50%; background:#eab308; box-shadow:0 0 6px #eab308; }
+
+    /* Glow border on active card */
+    .glow-border { box-shadow: 0 0 0 1px rgba(99,102,241,.2), 0 0 20px rgba(99,102,241,.07); }
+
+    /* Fade in */
+    @keyframes fadeUp { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+    .fade-up { animation: fadeUp .3s ease forwards; }
+  </style>
+</head>
+<body>
+
+  <!-- Orbs -->
+  <div class="orb w-96 h-96 bg-indigo-700/20 -top-32 -left-24"></div>
+  <div class="orb w-72 h-72 bg-purple-700/15 top-1/2 -right-20"></div>
+  <div class="orb w-64 h-64 bg-blue-700/10 bottom-0 left-1/3"></div>
+
+  <!-- Layout -->
+  <div class="relative z-10 flex flex-col h-screen">
+
+    <!-- ── HEADER ── -->
+    <header class="flex items-center justify-between px-5 py-3 flex-shrink-0" style="border-bottom:1px solid rgba(255,255,255,0.06); background:rgba(9,9,11,0.85); backdrop-filter:blur(16px);">
+
+      <!-- Logo -->
+      <div class="flex items-center gap-2.5">
+        <div class="w-7 h-7 rounded-lg btn-grad flex items-center justify-center flex-shrink-0">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+          </svg>
+        </div>
+        <span class="font-bold text-sm tracking-tight grad">CodeForge</span>
+        <span class="hidden md:block text-xs text-zinc-600 font-medium pl-1">AI Code Studio</span>
+      </div>
+
+      <!-- Tabs -->
+      <div class="flex items-center gap-1 p-1 rounded-xl glass">
+        <button id="tab-generate" class="tab-btn active px-4 py-1.5 rounded-lg text-sm font-medium border border-transparent transition-all flex items-center gap-2" onclick="switchTab('generate')">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+          Generate
+        </button>
+        <button id="tab-review" class="tab-btn px-4 py-1.5 rounded-lg text-sm font-medium border border-transparent transition-all text-zinc-400 flex items-center gap-2" onclick="switchTab('review')">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          Review
+        </button>
+      </div>
+
+      <!-- Model selector -->
+      <div class="flex items-center gap-2">
+        <span class="text-xs text-zinc-600">Model:</span>
+        <button id="model-groq" class="model-badge active px-3 py-1.5 rounded-lg text-xs font-medium border border-white/10 glass flex items-center gap-1.5" onclick="selectModel('groq')">
+          <div class="dot-green"></div>
+          Llama 3.3 70B
+          <span class="text-zinc-600 text-[10px]">Groq</span>
+        </button>
+        <button id="model-openrouter" class="model-badge px-3 py-1.5 rounded-lg text-xs font-medium border border-white/10 glass flex items-center gap-1.5 text-zinc-400" onclick="selectModel('openrouter')">
+          <div class="dot-yellow"></div>
+          Nemotron 120B
+          <span class="text-zinc-600 text-[10px]">OpenRouter</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- ── MAIN ── -->
+    <main class="flex-1 overflow-hidden p-4">
+
+      <!-- ── GENERATE TAB ── -->
+      <div id="panel-generate" class="h-full grid gap-4" style="grid-template-columns:1fr 1fr;">
+
+        <!-- Input panel -->
+        <div class="glass rounded-2xl glow-border flex flex-col overflow-hidden">
+          <div class="flex items-center justify-between px-5 py-3.5 flex-shrink-0" style="border-bottom:1px solid rgba(255,255,255,0.05);">
+            <div class="flex items-center gap-2">
+              <svg class="w-4 h-4 text-indigo-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+              <span class="text-sm font-semibold text-zinc-200">Prompt</span>
+            </div>
+            <button onclick="clearGenerate()" class="text-xs text-zinc-600 hover:text-zinc-400 transition-colors">Clear</button>
+          </div>
+          <div class="flex-1 flex flex-col p-4 gap-3 overflow-hidden">
+            <textarea id="gen-prompt" class="flex-1 rounded-xl p-4 w-full"
+              placeholder="Describe what you want to build...&#10;&#10;e.g. &quot;A Python function that fetches weather data from an API, parses the JSON, and returns a formatted summary string&quot;"
+            ></textarea>
+            <div class="flex items-center gap-2 flex-shrink-0">
+              <select id="gen-language" class="flex-1">
+                <option value="javascript">JavaScript</option>
+                <option value="typescript">TypeScript</option>
+                <option value="python" selected>Python</option>
+                <option value="rust">Rust</option>
+                <option value="go">Go</option>
+                <option value="java">Java</option>
+                <option value="cpp">C++</option>
+                <option value="csharp">C#</option>
+                <option value="php">PHP</option>
+                <option value="ruby">Ruby</option>
+                <option value="swift">Swift</option>
+                <option value="kotlin">Kotlin</option>
+                <option value="sql">SQL</option>
+                <option value="bash">Bash</option>
+                <option value="html">HTML/CSS</option>
+              </select>
+              <button id="gen-btn" onclick="generate()" class="btn-grad flex-1 py-2 rounded-xl text-sm font-semibold flex items-center justify-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                Generate  <span class="text-xs opacity-60 hidden md:inline">(Ctrl+↵)</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Output panel -->
+        <div class="glass rounded-2xl flex flex-col overflow-hidden">
+          <div class="flex items-center justify-between px-5 py-3.5 flex-shrink-0" style="border-bottom:1px solid rgba(255,255,255,0.05);">
+            <div class="flex items-center gap-2">
+              <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+              <span class="text-sm font-semibold text-zinc-200">Output</span>
+              <div id="gen-loading" class="hidden"><div class="spinner"></div></div>
+            </div>
+            <div class="flex items-center gap-2">
+              <button id="gen-copy-btn" onclick="copyCode()" class="text-xs px-2.5 py-1 rounded-lg glass border-white/10 text-zinc-400 hover:text-white transition-colors flex items-center gap-1.5 disabled:opacity-30" disabled>
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+                Copy
+              </button>
+              <button id="gen-download-btn" onclick="downloadCode()" class="text-xs px-2.5 py-1 rounded-lg glass border-white/10 text-zinc-400 hover:text-white transition-colors flex items-center gap-1.5 disabled:opacity-30" disabled>
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                Download
+              </button>
+            </div>
+          </div>
+          <div class="flex-1 overflow-hidden p-3">
+            <div id="gen-output-wrap" class="code-wrap h-full">
+              <pre><code id="gen-output" class="placeholder-state">// Your generated code will appear here...
+//
+// Tips:
+//   • Be specific in your prompt
+//   • Mention libraries or patterns you want
+//   • Ctrl+Enter to generate quickly</code></pre>
+            </div>
+          </div>
+          <!-- Stats bar -->
+          <div id="gen-stats" class="hidden flex-shrink-0 px-5 py-2.5 flex items-center gap-4 text-xs text-zinc-600" style="border-top:1px solid rgba(255,255,255,0.04);">
+            <span id="gen-stat-model"></span>
+            <span class="text-zinc-800">·</span>
+            <span id="gen-stat-chars"></span>
+            <span class="text-zinc-800">·</span>
+            <span id="gen-stat-time"></span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ── REVIEW TAB ── -->
+      <div id="panel-review" class="hidden h-full grid gap-4" style="grid-template-columns:1fr 1fr;">
+
+        <!-- Input panel -->
+        <div class="glass rounded-2xl glow-border flex flex-col overflow-hidden">
+          <div class="flex items-center justify-between px-5 py-3.5 flex-shrink-0" style="border-bottom:1px solid rgba(255,255,255,0.05);">
+            <div class="flex items-center gap-2">
+              <svg class="w-4 h-4 text-indigo-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+              <span class="text-sm font-semibold text-zinc-200">Your Code</span>
+            </div>
+            <button onclick="clearReview()" class="text-xs text-zinc-600 hover:text-zinc-400 transition-colors">Clear</button>
+          </div>
+          <div class="flex-1 flex flex-col p-4 gap-3 overflow-hidden">
+            <textarea id="rev-code" class="flex-1 rounded-xl p-4 w-full font-mono" style="font-family:'JetBrains Mono',monospace; font-size:13px;"
+              placeholder="Paste your code here to get a detailed AI review..."></textarea>
+            <div class="flex items-center gap-2 flex-shrink-0">
+              <select id="rev-language">
+                <option value="javascript">JavaScript</option>
+                <option value="typescript">TypeScript</option>
+                <option value="python" selected>Python</option>
+                <option value="rust">Rust</option>
+                <option value="go">Go</option>
+                <option value="java">Java</option>
+                <option value="cpp">C++</option>
+                <option value="csharp">C#</option>
+                <option value="php">PHP</option>
+                <option value="ruby">Ruby</option>
+                <option value="swift">Swift</option>
+                <option value="kotlin">Kotlin</option>
+                <option value="sql">SQL</option>
+                <option value="bash">Bash</option>
+              </select>
+              <button id="rev-btn" onclick="review()" class="btn-grad flex-1 py-2 rounded-xl text-sm font-semibold flex items-center justify-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                Review Code  <span class="text-xs opacity-60 hidden md:inline">(Ctrl+↵)</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Review output panel -->
+        <div class="glass rounded-2xl flex flex-col overflow-hidden">
+          <div class="flex items-center justify-between px-5 py-3.5 flex-shrink-0" style="border-bottom:1px solid rgba(255,255,255,0.05);">
+            <div class="flex items-center gap-2">
+              <svg class="w-4 h-4 text-purple-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+              <span class="text-sm font-semibold text-zinc-200">Review</span>
+              <div id="rev-loading" class="hidden"><div class="spinner"></div></div>
+            </div>
+            <button id="rev-copy-btn" onclick="copyReview()" class="text-xs px-2.5 py-1 rounded-lg glass border-white/10 text-zinc-400 hover:text-white transition-colors flex items-center gap-1.5 disabled:opacity-30" disabled>
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+              Copy
+            </button>
+          </div>
+          <div class="flex-1 overflow-y-auto p-5">
+            <div id="rev-output" class="review-output">
+              <p style="color:#3f3f46; font-size:14px;">Your code review will appear here.<br/><br/>The AI will analyze:<br/>• 🐛 Bugs &amp; edge cases<br/>• 🔒 Security issues<br/>• ⚡ Performance improvements<br/>• 🎨 Code style &amp; readability<br/>• ✅ Best practices</p>
+            </div>
+          </div>
+          <!-- Stats bar -->
+          <div id="rev-stats" class="hidden flex-shrink-0 px-5 py-2.5 flex items-center gap-4 text-xs text-zinc-600" style="border-top:1px solid rgba(255,255,255,0.04);">
+            <span id="rev-stat-model"></span>
+            <span class="text-zinc-800">·</span>
+            <span id="rev-stat-time"></span>
+          </div>
+        </div>
+
+      </div>
+
+    </main>
+  </div>
+
+  <!-- Toast -->
+  <div id="toast"></div>
+
+  <script>
+    // ── State ──
+    let activeTab = 'generate';
+    let activeModel = 'groq';
+    let generatedCode = '';
+    let reviewText = '';
+    let isGenerating = false;
+    let isReviewing = false;
+
+    // ── Tab switching ──
+    function switchTab(tab) {
+      activeTab = tab;
+      document.getElementById('panel-generate').classList.toggle('hidden', tab !== 'generate');
+      document.getElementById('panel-review').classList.toggle('hidden', tab !== 'review');
+      document.getElementById('tab-generate').classList.toggle('active', tab === 'generate');
+      document.getElementById('tab-generate').classList.toggle('text-zinc-400', tab !== 'generate');
+      document.getElementById('tab-review').classList.toggle('active', tab === 'review');
+      document.getElementById('tab-review').classList.toggle('text-zinc-400', tab !== 'review');
+    }
+
+    // ── Model selection ──
+    function selectModel(model) {
+      activeModel = model;
+      document.getElementById('model-groq').classList.toggle('active', model === 'groq');
+      document.getElementById('model-groq').classList.toggle('text-zinc-400', model !== 'groq');
+      document.getElementById('model-openrouter').classList.toggle('active', model === 'openrouter');
+      document.getElementById('model-openrouter').classList.toggle('text-zinc-400', model !== 'openrouter');
+    }
+
+    // ── SSE stream parser ──
+    async function* streamResponse(response) {
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder();
+      let buffer = '';
+      try {
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          buffer += decoder.decode(value, { stream: true });
+          const lines = buffer.split('\n');
+          buffer = lines.pop() || '';
+          for (const line of lines) {
+            const trimmed = line.trim();
+            if (!trimmed.startsWith('data: ')) continue;
+            const data = trimmed.slice(6);
+            if (data === '[DONE]') return;
+            try {
+              const json = JSON.parse(data);
+              const token = json.choices?.[0]?.delta?.content;
+              if (token) yield token;
+            } catch {}
+          }
+        }
+      } finally {
+        reader.releaseLock();
+      }
+    }
+
+    // ── Generate ──
+    async function generate() {
+      if (isGenerating) return;
+      const prompt = document.getElementById('gen-prompt').value.trim();
+      const language = document.getElementById('gen-language').value;
+      if (!prompt) { showToast('Please enter a prompt first'); return; }
+
+      isGenerating = true;
+      generatedCode = '';
+      const btn = document.getElementById('gen-btn');
+      const loading = document.getElementById('gen-loading');
+      const copyBtn = document.getElementById('gen-copy-btn');
+      const dlBtn = document.getElementById('gen-download-btn');
+      const stats = document.getElementById('gen-stats');
+      const outputEl = document.getElementById('gen-output');
+      const wrap = document.getElementById('gen-output-wrap');
+
+      btn.disabled = true;
+      loading.classList.remove('hidden');
+      copyBtn.disabled = true;
+      dlBtn.disabled = true;
+      stats.classList.add('hidden');
+      outputEl.className = 'cursor';
+      outputEl.textContent = '';
+      wrap.querySelector('pre').className = '';
+      wrap.querySelector('pre').style.padding = '20px';
+
+      const startTime = Date.now();
+      const modelName = activeModel === 'groq' ? 'Llama 3.3 70B · Groq' : 'Nemotron 120B · OpenRouter';
+
+      const systemPrompt = `You are an expert software engineer. When asked to generate code, produce clean, well-structured, production-quality ${language} code.
+Always wrap your code in a single markdown code block with the language specified.
+Add brief inline comments for complex logic. Do not add unnecessary explanations outside the code block unless asked.`;
+
+      const userPrompt = `Generate ${language} code for the following:\n\n${prompt}`;
+
+      try {
+        const res = await fetch('/api/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            model: activeModel,
+            messages: [
+              { role: 'system', content: systemPrompt },
+              { role: 'user', content: userPrompt }
+            ]
+          })
+        });
+
+        if (!res.ok) {
+          const err = await res.json();
+          outputEl.className = 'placeholder-state';
+          outputEl.textContent = `// Error: ${err.error}`;
+          showToast('Error: ' + err.error, true);
+          return;
+        }
+
+        let rawText = '';
+        for await (const token of streamResponse(res)) {
+          rawText += token;
+          // Strip markdown fences for display
+          const code = stripFences(rawText);
+          outputEl.textContent = code;
+          outputEl.className = 'cursor';
+          wrap.scrollTop = wrap.scrollHeight;
+        }
+
+        // Final render with syntax highlighting
+        generatedCode = stripFences(rawText);
+        outputEl.className = language;
+        outputEl.textContent = generatedCode;
+        hljs.highlightElement(outputEl);
+
+        const elapsed = ((Date.now() - startTime) / 1000).toFixed(1);
+        document.getElementById('gen-stat-model').textContent = modelName;
+        document.getElementById('gen-stat-chars').textContent = `${generatedCode.length} chars`;
+        document.getElementById('gen-stat-time').textContent = `${elapsed}s`;
+        stats.classList.remove('hidden');
+        copyBtn.disabled = false;
+        dlBtn.disabled = false;
+
+      } catch (err) {
+        outputEl.className = 'placeholder-state';
+        outputEl.textContent = `// Network error: ${err.message}`;
+        showToast('Network error', true);
+      } finally {
+        isGenerating = false;
+        btn.disabled = false;
+        loading.classList.add('hidden');
+      }
+    }
+
+    // ── Review ──
+    async function review() {
+      if (isReviewing) return;
+      const code = document.getElementById('rev-code').value.trim();
+      const language = document.getElementById('rev-language').value;
+      if (!code) { showToast('Please paste code to review'); return; }
+
+      isReviewing = true;
+      reviewText = '';
+      const btn = document.getElementById('rev-btn');
+      const loading = document.getElementById('rev-loading');
+      const copyBtn = document.getElementById('rev-copy-btn');
+      const stats = document.getElementById('rev-stats');
+      const outputEl = document.getElementById('rev-output');
+
+      btn.disabled = true;
+      loading.classList.remove('hidden');
+      copyBtn.disabled = true;
+      stats.classList.add('hidden');
+      outputEl.innerHTML = '<span style="color:#52525b;">Analyzing your code...</span>';
+
+      const startTime = Date.now();
+      const modelName = activeModel === 'groq' ? 'Llama 3.3 70B · Groq' : 'Nemotron 120B · OpenRouter';
+
+      const systemPrompt = `You are a senior software engineer conducting a thorough code review.
+Analyze the provided ${language} code and give structured, actionable feedback covering:
+1. **Bugs & Logic Errors** — actual or potential bugs
+2. **Security Issues** — vulnerabilities or unsafe patterns
+3. **Performance** — bottlenecks or optimization opportunities
+4. **Code Quality** — readability, naming, structure
+5. **Best Practices** — language-specific conventions
+6. **Summary** — overall assessment and key improvements
+
+Be specific, reference line-level issues where relevant, and provide corrected snippets when helpful.
+Use markdown formatting.`;
+
+      try {
+        const res = await fetch('/api/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            model: activeModel,
+            messages: [
+              { role: 'system', content: systemPrompt },
+              { role: 'user', content: `Review this ${language} code:\n\`\`\`${language}\n${code}\n\`\`\`` }
+            ]
+          })
+        });
+
+        if (!res.ok) {
+          const err = await res.json();
+          outputEl.innerHTML = `<p style="color:#ef4444;">Error: ${err.error}</p>`;
+          showToast('Error: ' + err.error, true);
+          return;
+        }
+
+        let raw = '';
+        for await (const token of streamResponse(res)) {
+          raw += token;
+          reviewText = raw;
+          outputEl.innerHTML = simpleMarkdown(raw) + '<span class="cursor"></span>';
+          outputEl.scrollTop = outputEl.scrollHeight;
+        }
+
+        reviewText = raw;
+        outputEl.innerHTML = simpleMarkdown(raw);
+        // Re-highlight any code blocks
+        outputEl.querySelectorAll('pre code').forEach(el => hljs.highlightElement(el));
+
+        const elapsed = ((Date.now() - startTime) / 1000).toFixed(1);
+        document.getElementById('rev-stat-model').textContent = modelName;
+        document.getElementById('rev-stat-time').textContent = `${elapsed}s`;
+        stats.classList.remove('hidden');
+        copyBtn.disabled = false;
+
+      } catch (err) {
+        outputEl.innerHTML = `<p style="color:#ef4444;">Network error: ${err.message}</p>`;
+        showToast('Network error', true);
+      } finally {
+        isReviewing = false;
+        btn.disabled = false;
+        loading.classList.add('hidden');
+      }
+    }
+
+    // ── Helpers ──
+    function stripFences(text) {
+      // Remove opening ```lang and closing ```
+      return text
+        .replace(/^```[\w]*\n?/m, '')
+        .replace(/```\s*$/m, '')
+        .trim();
+    }
+
+    function simpleMarkdown(text) {
+      return text
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+        // Code blocks
+        .replace(/```(\w*)\n?([\s\S]*?)```/g, (_, lang, code) =>
+          `<pre><code class="${lang || ''}">${code.trim()}</code></pre>`)
+        // Inline code
+        .replace(/`([^`]+)`/g, '<code>$1</code>')
+        // Bold
+        .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+        // Italic
+        .replace(/\*(.+?)\*/g, '<em>$1</em>')
+        // H1-H3
+        .replace(/^### (.+)$/gm, '<h3>$1</h3>')
+        .replace(/^## (.+)$/gm, '<h2>$1</h2>')
+        .replace(/^# (.+)$/gm, '<h1>$1</h1>')
+        // HR
+        .replace(/^---+$/gm, '<hr/>')
+        // Bullet lists
+        .replace(/^\s*[-*] (.+)$/gm, '<li>$1</li>')
+        .replace(/(<li>.*<\/li>)/gs, '<ul>$1</ul>')
+        // Numbered lists
+        .replace(/^\d+\. (.+)$/gm, '<li>$1</li>')
+        // Blockquotes
+        .replace(/^> (.+)$/gm, '<blockquote>$1</blockquote>')
+        // Line breaks
+        .replace(/\n\n/g, '</p><p>')
+        .replace(/\n/g, '<br/>');
+    }
+
+    function clearGenerate() {
+      document.getElementById('gen-prompt').value = '';
+      const outputEl = document.getElementById('gen-output');
+      outputEl.className = 'placeholder-state';
+      outputEl.textContent = '// Your generated code will appear here...';
+      document.getElementById('gen-output-wrap').querySelector('pre').className = '';
+      document.getElementById('gen-stats').classList.add('hidden');
+      document.getElementById('gen-copy-btn').disabled = true;
+      document.getElementById('gen-download-btn').disabled = true;
+      generatedCode = '';
+    }
+
+    function clearReview() {
+      document.getElementById('rev-code').value = '';
+      document.getElementById('rev-output').innerHTML = '<p style="color:#3f3f46; font-size:14px;">Your code review will appear here.<br/><br/>The AI will analyze:<br/>• 🐛 Bugs &amp; edge cases<br/>• 🔒 Security issues<br/>• ⚡ Performance improvements<br/>• 🎨 Code style &amp; readability<br/>• ✅ Best practices</p>';
+      document.getElementById('rev-stats').classList.add('hidden');
+      document.getElementById('rev-copy-btn').disabled = true;
+      reviewText = '';
+    }
+
+    function copyCode() {
+      if (!generatedCode) return;
+      navigator.clipboard.writeText(generatedCode).then(() => showToast('Code copied!'));
+    }
+
+    function copyReview() {
+      if (!reviewText) return;
+      navigator.clipboard.writeText(reviewText).then(() => showToast('Review copied!'));
+    }
+
+    function downloadCode() {
+      if (!generatedCode) return;
+      const lang = document.getElementById('gen-language').value;
+      const extMap = { javascript:'js', typescript:'ts', python:'py', rust:'rs', go:'go', java:'java', cpp:'cpp', csharp:'cs', php:'php', ruby:'rb', swift:'swift', kotlin:'kt', sql:'sql', bash:'sh', html:'html' };
+      const ext = extMap[lang] || 'txt';
+      const blob = new Blob([generatedCode], { type: 'text/plain' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `generated.${ext}`;
+      a.click();
+      showToast('Downloaded!');
+    }
+
+    let toastTimer;
+    function showToast(msg, isError = false) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.style.color = isError ? '#f87171' : '#a1a1aa';
+      t.classList.add('show');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => t.classList.remove('show'), 2500);
+    }
+
+    // ── Keyboard shortcuts ──
+    document.addEventListener('keydown', (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+        e.preventDefault();
+        if (activeTab === 'generate') generate();
+        else review();
+      }
+    });
+
+    // ── Init ──
+    // Check health on load
+    fetch('/api/health').then(r => r.json()).then(data => {
+      if (!data.groq) showToast('⚠ Groq key missing', true);
+      else if (!data.openrouter) showToast('⚠ OpenRouter key missing', true);
+    }).catch(() => {});
+  </script>
+</body>
+</html>
