@@ -1,6 +1,7 @@
 import { useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { ChevronFirst, ChevronLast, ChevronLeft, ChevronRight, Footprints, MessageCircleQuestion, Pause, Play } from 'lucide-react';
 import type { Trace } from '../lib/harness';
+import { explainRunError } from '../lib/runner';
 import { StudioContext } from './studioContext';
 
 const SPEEDS = [{ label: '1×', ms: 700 }, { label: '2×', ms: 350 }, { label: '4×', ms: 150 }];
@@ -36,8 +37,18 @@ export function TracePanel({ code, trace }: { code: string; trace: Trace }) {
     codeRef.current?.querySelector('[data-current="true"]')?.scrollIntoView({ block: 'nearest' });
   }, [i]);
 
-  if (!steps.length) {
-    return <p className="mt-2 rounded-xl border border-[#f08c7c]/25 bg-[#f08c7c]/[.07] px-4 py-3 text-xs text-[#f5b3a8]">{trace.error ?? 'Nothing ran — is there any top-level code that calls your functions?'}</p>;
+  const friendly = explainRunError(trace.error);
+  // Stopped before running any real code (e.g. an import that can't work in the browser):
+  // explain that instead of showing a debugger stuck on line 1.
+  const stoppedAtStart = !!friendly && steps.filter((s) => s.event === 'line').length <= 3;
+  if (!steps.length || stoppedAtStart) {
+    return (
+      <div className="mt-2 rounded-xl border border-[#f08c7c]/25 bg-[#f08c7c]/[.07] px-4 py-3 text-xs leading-5 text-[#f5b3a8]">
+        <p className="font-semibold">{friendly ? 'This program can’t run in the browser' : 'Nothing ran'}</p>
+        <p className="mt-1 text-[#f5b3a8]/85">{friendly ?? trace.error ?? 'Is there any top-level code that calls your functions?'}</p>
+        {trace.error && friendly && <p className="mt-2 font-mono text-[11px] text-white/35">{trace.error}</p>}
+      </div>
+    );
   }
 
   const output = trace.stdout.slice(0, step.stdout);
@@ -123,7 +134,12 @@ export function TracePanel({ code, trace }: { code: string; trace: Trace }) {
           </button>
         )}
       </div>
-      {trace.error && <p className="border-t border-white/[.06] px-4 py-2 font-mono text-[11px] text-[#f5b3a8]">Program stopped with {trace.error}</p>}
+      {trace.error && (
+        <div className="border-t border-white/[.06] px-4 py-2 text-[11px]">
+          <p className="font-mono text-[#f5b3a8]">Program stopped with {trace.error}</p>
+          {friendly && <p className="mt-1 leading-5 text-white/45">{friendly}</p>}
+        </div>
+      )}
     </div>
   );
 }

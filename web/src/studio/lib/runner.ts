@@ -49,7 +49,8 @@ ready.then(() => postMessage({ type: 'ready' }), (e) => postMessage({ type: 'rea
 onmessage = async ({ data }) => {
   const py = await ready;
   try {
-    await py.loadPackagesFromImports(data.code);
+    // Detect packages from the user's own source (a wrapper may hide it inside a string).
+    await py.loadPackagesFromImports(data.imports ?? data.code);
     // Fresh globals per run, so nothing defined by an earlier run can leak into this one.
     const scope = py.globals.get('dict')();
     scope.set('__name__', '__main__');
@@ -97,7 +98,7 @@ function prepareJs(code: string) {
   return code.replace(/^\s*export\s+default\s+/gm, '').replace(/^\s*export\s+(?=(async\s+)?(function|const|let|var|class)\b)/gm, '');
 }
 
-export async function runCode(lang: RunLang, code: string, onLine: (l: RunLine) => void, opts: { limitMs?: number } = {}): Promise<RunResult> {
+export async function runCode(lang: RunLang, code: string, onLine: (l: RunLine) => void, opts: { limitMs?: number; importsFrom?: string } = {}): Promise<RunResult> {
   const lines: RunLine[] = [];
   const push = (l: RunLine) => {
     if (lines.length === MAX_LINES) { const cut: RunLine = { kind: 'info', text: `…output truncated after ${MAX_LINES} lines` }; lines.push(cut); onLine(cut); }
@@ -146,6 +147,23 @@ export async function runCode(lang: RunLang, code: string, onLine: (l: RunLine) 
       limit
     );
     worker.addEventListener('message', onMsg);
-    worker.postMessage({ code: source });
+    worker.postMessage({ code: source, imports: opts.importsFrom });
   });
+}
+
+/**
+ * Plain-language explanation for errors caused by the browser runtime rather than the
+ * code itself — most often importing a package that can't run in the browser.
+ */
+export function explainRunError(error?: string): string | null {
+  if (!error) return null;
+  const mod = /ModuleNotFoundError: No module named '([\w.]+)'/.exec(error)?.[1];
+  if (mod) {
+    const top = mod.split('.')[0];
+    const heavy = /^(torch|torchvision|torchaudio|tensorflow|keras|jax|jaxlib|transformers|accelerate|diffusers|vllm|cv2|onnxruntime|xgboost|lightgbm|psycopg2|mysqlclient)$/.test(top);
+    return heavy
+      ? `“${top}” can’t run in the browser. Code here runs on Pyodide (Python compiled to WebAssembly), which supports the standard library and packages such as numpy, pandas and scipy — but not machine-learning frameworks like PyTorch, TensorFlow or Hugging Face transformers, or native database drivers. Run this code on your own machine, or step through the parts that don’t depend on it.`
+      : `“${top}” isn’t available in the browser’s Python (Pyodide). The standard library and Pyodide’s built-in packages (numpy, pandas, scipy and others) work; most other third-party packages don’t.`;
+  }
+  return null;
 }

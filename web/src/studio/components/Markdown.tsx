@@ -4,7 +4,7 @@ import remarkGfm from 'remark-gfm';
 import rehypeHighlight from 'rehype-highlight';
 import { Check, Copy, Download, GitCompare, Loader2, Play, Square, Wrench, X } from 'lucide-react';
 import { extFor } from '../lib/modes';
-import { runCode, runnableLang, type RunLine, type RunResult } from '../lib/runner';
+import { explainRunError, runCode, runnableLang, type RunLine, type RunResult } from '../lib/runner';
 import { MermaidBlock } from './MermaidBlock';
 import { RegexTester } from './RegexTester';
 import { DiffView } from './DiffView';
@@ -96,11 +96,12 @@ function CodeBlock({ lang, raw, streaming, children }: { lang: string; raw: stri
               <div key={i} className={l.kind === 'err' ? 'text-[#f5b3a8]' : l.kind === 'info' ? 'text-white/35 italic' : 'text-[#d2dce3]'}>{l.text}</div>
             ))}
             {result?.error && <div className="whitespace-pre-wrap text-[#f5b3a8]">{result.error}</div>}
+            {explainRunError(result?.error) && <div className="mt-1.5 whitespace-normal font-sans text-[11.5px] leading-5 text-white/50">{explainRunError(result?.error)}</div>}
             {result && !result.error && !result.lines.some((l) => l.kind !== 'info') && (
               <div className="text-white/35 italic">Ran without output. (Defines functions but never calls them? Ask for a usage example.)</div>
             )}
           </pre>
-          {failed && askFix && runLang && (
+          {failed && askFix && runLang && !explainRunError(result?.error) && (
             <div className="px-4 pb-3">
               <button
                 onClick={() => askFix('run', `${result!.error}\n\nCode:\n${raw}`, lang)}

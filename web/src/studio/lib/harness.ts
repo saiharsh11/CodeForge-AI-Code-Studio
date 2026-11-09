@@ -288,7 +288,7 @@ finally:
     _cft_sys.stdout = _cft_real
 print("${TAG}" + _cft_json.dumps({"steps": _cft_steps, "stdout": "".join(_cft_buf), "truncated": _cft_trunc, "error": _cft_err}))
 `;
-  const r = await runCode('python', driver, () => {}, { limitMs: 20_000 });
+  const r = await runCode('python', driver, () => {}, { limitMs: 20_000, importsFrom: code });
   const parsed = parseTagged<{ steps: TraceStep[]; stdout: string; truncated: boolean; error: string | null }>(r.lines);
   if (!parsed) return { steps: [], stdout: '', truncated: false, error: r.error ?? 'Tracing failed.' };
   return { steps: parsed.steps, stdout: parsed.stdout, truncated: parsed.truncated, error: parsed.error ?? undefined };
