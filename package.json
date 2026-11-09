@@ -4,7 +4,7 @@
   "description": "CodeForge API: proxies free OpenRouter models for the CodeForge web app, with fallback, quota and guardrails",
   "main": "server.js",
   "engines": {
-    "node": "24.x"
+    "node": "26.x"
   },
   "scripts": {
     "start": "node server.js",
