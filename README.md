@@ -1,217 +1,149 @@
-<div align="center">
+# CodeForge
 
-# ⚡ CodeForge
-### AI-Powered Code Generator & Reviewer
+**A free AI code workbench where answers get run, not just read.**
 
-# Link : https://code-forge-ai-code-studio.vercel.app/
+CodeForge helps you write, review, understand and debug code with free AI models — and then checks the result by actually running it in your browser: examples are executed, edge-case inputs are thrown at your function, and complexity claims are timed.
 
-<p>
-  <img src="https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white" />
-  <img src="https://img.shields.io/badge/Express.js-000000?style=for-the-badge&logo=express&logoColor=white" />
-  <img src="https://img.shields.io/badge/Tailwind_CSS-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white" />
-  <img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black" />
-</p>
-
-<p>
-  <img src="https://img.shields.io/badge/Groq-F55036?style=for-the-badge&logo=groq&logoColor=white" />
-  <img src="https://img.shields.io/badge/OpenRouter-6366F1?style=for-the-badge&logo=openai&logoColor=white" />
-  <img src="https://img.shields.io/badge/Llama_3.3_70B-0467DF?style=for-the-badge&logo=meta&logoColor=white" />
-  <img src="https://img.shields.io/badge/Nemotron_120B-76B900?style=for-the-badge&logo=nvidia&logoColor=white" />
-</p>
-
-<p>
-  <img src="https://img.shields.io/badge/License-MIT-purple?style=flat-square" />
-  <img src="https://img.shields.io/badge/Status-Active-22c55e?style=flat-square" />
-  <img src="https://img.shields.io/badge/Local-Only-orange?style=flat-square" />
-  <img src="https://img.shields.io/badge/Free_Tier-Supported-blue?style=flat-square" />
-</p>
-
-<br/>
-
-> **CodeForge** is a locally-hosted, full-stack web application that gives you instant access to two powerful AI language models for generating and reviewing source code — all running privately on your own machine.
-
-<br/>
-
-![CodeForge Preview](https://placehold.co/900x500/09090b/6366f1?text=CodeForge+%E2%80%94+AI+Code+Studio&font=inter)
-
-</div>
+> Live site: _coming soon_ (frontend on Vercel, API on Railway)
 
 ---
 
-## ✨ Features
+## What it does
 
-| Feature | Description |
+The studio has 14 modes, grouped into four menus.
+
+| Group | Modes |
 |---|---|
-| ✍️ **Code Generator** | Describe what you want in plain English → get clean, commented code |
-| 🔍 **Code Reviewer** | Paste any code → get a structured AI review with bugs, security issues & fixes |
-| ⚡ **Real-Time Streaming** | Responses stream token by token — no waiting for the full output |
-| 🤖 **Dual AI Models** | Switch between **Llama 3.3 70B** (Groq) and **Nemotron 120B** (OpenRouter) |
-| 🎨 **Syntax Highlighting** | Auto-highlighted code output using highlight.js |
-| 📋 **Copy & Download** | Copy to clipboard or download as a proper source file |
-| 🌐 **15 Languages** | Python, JS, TS, Rust, Go, Java, C++, C#, PHP, Ruby, Swift, Kotlin, SQL, Bash, HTML |
-| 🔒 **Secure by Design** | API keys never exposed to the browser — stored only in `.env` |
+| **Write** | Generate · Refactor · Convert (between languages) · Write tests · Regex |
+| **Understand** | Explain · Diagram (Mermaid flowchart / sequence / class / state) · Step through |
+| **Fix** | Review · Debug · Error (paste a stack trace) |
+| **Check** | By example · Break it · Big-O |
+
+Every answer is a conversation — ask follow-ups, and use **Continue with this code** to send the result straight into the next mode.
+
+### Checks that run in your browser
+
+Most AI tools hand you code and hope it works. These modes test the answer instead of trusting it:
+
+- **Run** — JavaScript, TypeScript and Python code blocks have a Run button. Python runs via [Pyodide](https://pyodide.org) (CPython compiled to WebAssembly). On an error, *Fix this error* sends it back to the model.
+- **By example** — you give input → expected output pairs; the model writes `solve()`; every example is executed and failures are sent back for repair automatically (at most twice).
+- **Break it** — the model proposes adversarial inputs (empty, huge, wrong types, unicode…); each one is run against *your* code with its own time limit, and you see which crash, hang or return the wrong value. After a fix, the same inputs re-run on the new code.
+- **Big-O** — the model states a complexity and writes an input generator; your function is timed at doubling input sizes, fitted against O(1)…O(2ⁿ) on log-log axes, and the claim is compared with the measurements.
+- **Step through** — Python executes line by line with every variable's value at each step (no AI request at all).
+- **Regex** — a live tester highlights matches as you edit the pattern; runaway patterns are stopped after 500 ms.
+- **Diff** — refactors and fixes can be viewed as a line diff against the code you pasted.
+
+**Limits, stated plainly:** passing your examples or a few hundred generated inputs is evidence, not proof of correctness. Only JavaScript, TypeScript and Python can be executed. Code runs in a background Web Worker in your own browser and is stopped on a time limit — that keeps the page responsive, but it is *not* a security sandbox (a worker shares the page's origin and can make network requests), so only run code you'd be comfortable running on your own machine.
 
 ---
 
-## 🖥️ Preview
-
-<div align="center">
-
-### Code Generator
-![Generator Tab](https://placehold.co/860x420/09090b/a5b4fc?text=Generate+Tab+%E2%80%94+Describe+%E2%86%92+Get+Code&font=inter)
-
-### Code Reviewer
-![Review Tab](https://placehold.co/860x420/09090b/86efac?text=Review+Tab+%E2%80%94+Paste+Code+%E2%86%92+Get+AI+Review&font=inter)
-
-</div>
-
----
-
-## 🛠️ Tech Stack
-
-### Backend
-- **[Node.js](https://nodejs.org)** — JavaScript runtime
-- **[Express.js](https://expressjs.com)** — HTTP server & routing
-- **[dotenv](https://npmjs.com/package/dotenv)** — Secure API key management
-- **Node `https` module** — Built-in HTTP client (no extra dependencies)
-
-### Frontend
-- **HTML5 + Vanilla JavaScript** — Zero framework overhead
-- **[Tailwind CSS](https://tailwindcss.com)** — Utility-first styling via CDN
-- **[highlight.js](https://highlightjs.org)** — Syntax highlighting for 20+ languages
-- **[JetBrains Mono](https://jetbrains.com/mono)** + **[Inter](https://rsms.me/inter)** — Fonts
-
-### AI / APIs
-- **[Groq](https://groq.com)** — Ultra-fast LPU inference (200+ tokens/sec)
-- **[OpenRouter](https://openrouter.ai)** — Unified API gateway for multiple AI models
-
-### AI Models
-| Model | Provider | Parameters | Strength |
-|---|---|---|---|
-| Llama 3.3 70B Versatile | Meta via Groq | 70B | Blazing fast, great for quick generation |
-| NVIDIA Nemotron 120B | NVIDIA via OpenRouter | 120B | Deeper reasoning, complex reviews |
-
----
-
-## 📁 Project Structure
+## Architecture
 
 ```
-code-app/
-├── server.js          # Express backend — API proxy + SSE streaming
-├── .env               # 🔒 Secret API keys (never commit this!)
-├── .env.example       # Safe template showing required keys
-├── package.json       # Dependencies & scripts
-├── start.bat          # One-click Windows launcher
-└── public/
-    └── index.html     # Complete UI — HTML + CSS + JS in one file
+ Browser (web/ — React + Vite, hosted on Vercel)
+ ├─ Landing page  /
+ ├─ Studio        /app
+ └─ In-browser execution: Web Workers (JS/TS) and Pyodide (Python), with timeouts
+          │  POST /api/chat (SSE stream)
+          ▼
+ API (server.js — Express, hosted on Railway)
+ ├─ Guardrails: per-visitor rate limits, size caps, CORS allow-list,
+ │              misuse pre-check, server-side policy prepended to every request
+ ├─ Model curation: official ":free" models, trusted publishers, not expiring soon
+ ├─ Fallback: a busy model's request is retried on the other model
+ └─ Quota: today's free-request allowance read from OpenRouter
+          │
+          ▼
+ OpenRouter → model providers
 ```
+
+### Models
+
+Two free models from [OpenRouter](https://openrouter.ai), chosen after testing every mode against them:
+
+- **Cohere North Mini Code** (default)
+- **NVIDIA Nemotron 3 Ultra**
+
+The server only offers OpenRouter's official `:free` variants from established publishers, skips any model scheduled to be retired within 60 days, and skips models whose description says prompts are retained. If the curated models disappear, it falls back to anything that passes those rules. The list is configurable with `MODEL_ALLOWLIST`.
+
+Free models are rate-limited: 50 requests per day per OpenRouter account (1,000 after buying $10 of credits) and 20 per minute. The studio's status bar shows how many are left today; asking the same question twice in one tab is answered from that tab's memory and doesn't use any.
+
+### Guardrails
+
+Enforced by the API, so they also apply to anyone calling it directly:
+
+- Per-visitor limits (default 6 requests/minute, 30/day, 2 in progress at once). Visitors are told apart by a salted hash of the IP address, kept in memory only and dropped within a day.
+- Request size caps and a CORS allow-list for the website's origin.
+- A server-side policy, prepended to every model request, that treats pasted code as data rather than instructions and keeps the assistant to programming help.
+- A narrow keyword pre-check that refuses obvious malware requests before any model is called.
+
+The deterministic checks (limits, caps, CORS) are reliable; the policy and keyword check reduce risk but are not guarantees. The OpenRouter key itself carries a second layer: a $0 budget, a two-model allow-list, and redaction of API keys, card numbers and similar secrets.
+
+### Privacy
+
+CodeForge has no accounts and does not save code or prompts. The API streams each request through without storing or logging its content (logs contain only status codes and model names). Conversations live in the browser tab. Requests are sent to OpenRouter and the model's provider, and the free providers used **may keep prompts and use them for training** — don't paste secrets or private data.
 
 ---
 
-## 🚀 Getting Started
+## Running locally
 
-### Prerequisites
+Requirements: Node.js 20+ and a free [OpenRouter API key](https://openrouter.ai/keys).
 
-- [Node.js](https://nodejs.org) v12 or higher
-- A free [Groq](https://console.groq.com) account → get your API key
-- A free [OpenRouter](https://openrouter.ai) account → get your API key
-
-### Installation
-
-**1. Clone the repository**
 ```bash
-git clone https://github.com/YOUR_USERNAME/codeforge.git
-cd codeforge
-```
-
-**2. Install dependencies**
-```bash
+# 1. API
+cp .env.example .env          # then put your key in OPENROUTER_API_KEY
 npm install
+npm run dev                   # http://localhost:3000
+
+# 2. Web app (second terminal)
+cd web
+npm install
+npm run dev                   # http://localhost:5173  (proxies /api to :3000)
 ```
 
-**3. Set up your API keys**
-```bash
-# Copy the example file
-cp .env.example .env
+### Configuration
 
-# Open .env and fill in your keys
-GROQ_API_KEY=your_groq_key_here
-OPENROUTER_API_KEY=your_openrouter_key_here
-```
+API (`.env`, see [.env.example](.env.example)):
 
-**4. Start the app**
-
-**Windows** — double-click `start.bat`
-
-**Or manually:**
-```bash
-node server.js
-```
-
-**5. Open in browser**
-```
-http://localhost:3000
-```
-
-> ⚠️ Keep the terminal window open while using the app. Closing it stops the server.
-
----
-
-## 💡 Usage
-
-### Generating Code
-1. Go to the **Generate** tab
-2. Select a **programming language**
-3. Choose a **model** (Llama or Nemotron)
-4. Describe what you want to build
-5. Click **Generate Code** or press `Ctrl+Enter`
-
-### Reviewing Code
-1. Go to the **Review** tab
-2. Paste your code into the left panel
-3. Select the **language** and **model**
-4. Click **Review Code** or press `Ctrl+Enter`
-5. Get a structured review covering:
-   - 🐛 Bugs & logic errors
-   - 🔒 Security vulnerabilities
-   - ⚡ Performance issues
-   - 🎨 Code quality & readability
-   - ✅ Best practices
-
-### Keyboard Shortcut
-| Shortcut | Action |
+| Variable | Purpose |
 |---|---|
-| `Ctrl + Enter` | Generate or Review (works from anywhere) |
+| `OPENROUTER_API_KEY` | Required |
+| `ALLOWED_ORIGINS` | Comma-separated website origins allowed to call the API (required in production) |
+| `MODEL_ALLOWLIST` | Free models to offer, in order; the first is the default |
+| `RATE_CHAT_PER_MIN`, `RATE_CHAT_PER_DAY`, `RATE_CONCURRENT`, `RATE_READS_PER_MIN` | Per-visitor limits |
+| `APP_URL` | Public site URL, sent to OpenRouter for attribution |
+| `NODE_ENV=production` | Disables the localhost development origins |
+
+Web (`web/.env` or the hosting dashboard):
+
+| Variable | Purpose |
+|---|---|
+| `VITE_API_URL` | URL of the deployed API, e.g. `https://your-api.up.railway.app` |
+
+## Deploying
+
+- **API → Railway:** deploy the repository root. [`railway.json`](railway.json) sets the start command and the `/api/health` check. Set `OPENROUTER_API_KEY`, `ALLOWED_ORIGINS` and `NODE_ENV=production`.
+- **Web → Vercel:** import the repository with **Root Directory = `web`**. [`web/vercel.json`](web/vercel.json) handles the build and the `/app` route. Set `VITE_API_URL` to the Railway URL.
 
 ---
 
-## 🔒 Security
+## Project structure
 
-- ✅ API keys are stored in `.env` — **never exposed to the browser**
-- ✅ App runs on `localhost` — **not accessible from the internet**
-- ✅ No data is logged or stored — **everything is ephemeral**
-- ⚠️ Prompts are sent to Groq/OpenRouter servers for AI processing
-- ⚠️ Never commit your `.env` file — it's listed in `.gitignore`
+```
+server.js          Express API: model list, chat streaming, fallback, quota
+guardrails.js      Rate limits, size caps, CORS, policy, misuse pre-check
+railway.json       Railway deploy settings
+web/
+  src/landing/     Landing page (animated preview, model ticker, FAQ)
+  src/studio/      The studio
+    lib/modes.ts       Mode definitions and instructions
+    lib/runner.ts      In-browser execution (Web Workers, Pyodide)
+    lib/harness.ts     Example runner, input runner, timing + curve fitting, Python tracer
+    components/        Composer, model picker, code blocks, diff, regex tester,
+                       diagram renderer, check panels, step-through debugger
+  vercel.json      Vercel deploy settings
+```
 
----
+## Tech stack
 
-## 🗺️ Roadmap
-
-- [ ] Conversation history (multi-turn generation)
-- [ ] Monaco Editor integration (VS Code-like editing)
-- [ ] More models (Claude, GPT-4o, DeepSeek)
-- [ ] Session history sidebar
-- [ ] File upload for code review
-- [ ] Export reviews as PDF
-
----
-
-
-
----
-
-<div align="center">
-
-Built with ⚡ using **Node.js**, **Groq**, and **OpenRouter**
-
-</div>
+React 19 · TypeScript · Vite 8 · Tailwind CSS 4 · Express 5 · Pyodide · Mermaid · OpenRouter

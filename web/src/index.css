@@ -1,0 +1,95 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;1,400&display=swap')
+layer(base);
+@import 'tailwindcss';
+
+/*
+  The default border color has changed to `currentcolor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
+
+  If we ever want to remove these styles, we need to add an explicit border
+  color utility to any element that depends on these defaults.
+*/
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentcolor);
+  }
+}
+
+:root { font-family: 'Inter', sans-serif; color: #151719; background: #f8f8f5; font-synthesis: none; text-rendering: optimizeLegibility; }
+html { scroll-behavior: smooth; }
+body { margin: 0; min-width: 320px; }
+.font-display { font-family: 'Playfair Display', Georgia, serif; font-weight: 400; }
+.font-mono { font-family: 'DM Mono', monospace; }
+::selection { background: #267bbb; color: white; }
+
+/* ── Motion ───────────────────────────────────────────── */
+.cf-cloud-track {
+  position: absolute; left: 0; display: flex; width: 200%;
+  animation: cf-drift linear infinite; will-change: transform;
+}
+@keyframes cf-drift { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+.cf-reveal { opacity: 0; transform: translateY(18px); transition: opacity .8s cubic-bezier(.2,.7,.2,1), transform .8s cubic-bezier(.2,.7,.2,1); }
+.cf-reveal.is-visible { opacity: 1; transform: none; }
+
+.cf-fade-in { animation: cf-fade-in .45s cubic-bezier(.2,.7,.2,1) both; }
+@keyframes cf-fade-in { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
+.cf-caret::after { content: ''; display: inline-block; width: 6px; height: 1.05em; margin-left: 2px; vertical-align: -0.15em; background: #79b8e4; animation: cf-blink 1s step-end infinite; }
+@keyframes cf-blink { 50% { opacity: 0; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .cf-cloud-track, .cf-fade-in, .cf-caret::after, .animate-pulse { animation: none !important; }
+  .cf-reveal { opacity: 1; transform: none; transition: none; }
+  html { scroll-behavior: auto; }
+}
+
+/* ── Studio: dark output panel ────────────────────────── */
+.cf-prose { font-size: 13.5px; line-height: 1.75; color: #c9d4dc; overflow-wrap: anywhere; }
+.cf-prose > :first-child { margin-top: 0; }
+.cf-prose > :last-child { margin-bottom: 0; }
+.cf-prose h1, .cf-prose h2, .cf-prose h3, .cf-prose h4 { color: #f3f6f8; font-weight: 600; margin: 1.3em 0 .5em; line-height: 1.35; }
+.cf-prose h1 { font-size: 1.2em; } .cf-prose h2 { font-size: 1.08em; } .cf-prose h3, .cf-prose h4 { font-size: 1em; }
+.cf-prose p { margin: .65em 0; }
+.cf-prose ul, .cf-prose ol { margin: .65em 0; padding-left: 1.35em; }
+.cf-prose ul { list-style: disc; } .cf-prose ol { list-style: decimal; }
+.cf-prose li { margin: .3em 0; } .cf-prose li::marker { color: rgba(255,255,255,.3); }
+.cf-prose strong { color: #f3f6f8; font-weight: 600; }
+.cf-prose a { color: #79b8e4; text-decoration: underline; text-underline-offset: 2px; }
+.cf-prose blockquote { border-left: 2px solid #267bbb; padding-left: 12px; color: rgba(255,255,255,.55); margin: .65em 0; }
+.cf-prose hr { border: 0; border-top: 1px solid rgba(255,255,255,.08); margin: 1.3em 0; }
+.cf-prose :not(pre) > code { font-family: 'DM Mono', monospace; font-size: .88em; color: #e7c47a; background: rgba(255,255,255,.06); padding: .1em .35em; border-radius: 5px; }
+.cf-prose table:not(.cf-diff) { display: block; overflow-x: auto; border-collapse: collapse; margin: .9em 0; font-size: 12.5px; }
+.cf-prose table:not(.cf-diff) :is(th, td) { border: 1px solid rgba(255,255,255,.08); padding: 6px 10px; text-align: left; }
+.cf-prose table:not(.cf-diff) th { color: #f3f6f8; background: rgba(255,255,255,.03); }
+.cf-prose pre { margin: 0; }
+.cf-prose pre code { font-family: 'DM Mono', monospace; font-size: 12.5px; line-height: 1.75; }
+
+/* Syntax colours lifted from the landing page mock-up */
+.hljs { color: #d2dce3; background: transparent; }
+.hljs-keyword, .hljs-built_in, .hljs-type, .hljs-literal, .hljs-selector-tag, .hljs-doctag { color: #72b5e4; }
+.hljs-string, .hljs-regexp, .hljs-addition, .hljs-template-tag { color: #b7d58d; }
+.hljs-title, .hljs-title.function_, .hljs-title.class_, .hljs-section, .hljs-params, .hljs-attr { color: #e7c47a; }
+.hljs-number, .hljs-symbol, .hljs-bullet { color: #e8a87c; }
+.hljs-comment, .hljs-quote { color: rgba(255,255,255,.35); font-style: italic; }
+.hljs-meta, .hljs-variable.language_, .hljs-tag { color: #c4a7f0; }
+.hljs-deletion { color: #f08c7c; }
+.hljs-emphasis { font-style: italic; } .hljs-strong { font-weight: 600; }
+
+/* ── Landing ──────────────────────────────────────────── */
+.cf-marquee { animation: cf-marquee 38s linear infinite; }
+.cf-marquee-wrap:hover .cf-marquee { animation-play-state: paused; }
+@keyframes cf-marquee { to { transform: translateX(-50%); } }
+.cf-mask-x { mask-image: linear-gradient(to right, transparent, #000 10%, #000 90%, transparent); }
+
+.cf-tilt { transition: transform .5s cubic-bezier(.2,.7,.2,1), box-shadow .5s; transform-style: preserve-3d; }
+
+@media (prefers-reduced-motion: reduce) {
+  .cf-marquee { animation: none !important; }
+  .cf-tilt { transform: none !important; }
+}

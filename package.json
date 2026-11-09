@@ -1,13 +1,19 @@
 {
   "name": "codeforge",
-  "version": "1.0.0",
-  "description": "AI Code Generator & Reviewer powered by Groq + OpenRouter",
+  "version": "2.0.0",
+  "description": "CodeForge API: proxies free OpenRouter models for the CodeForge web app, with fallback, quota and guardrails",
   "main": "server.js",
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "dev:web": "npm --prefix web run dev",
+    "build:web": "npm --prefix web ci && npm --prefix web run build"
   },
   "dependencies": {
-    "express": "^4.18.2",
-    "dotenv": "^16.3.1"
+    "dotenv": "^18.0.10",
+    "express": "^5.3.0"
   }
 }
