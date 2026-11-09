@@ -4,7 +4,7 @@
 
 CodeForge helps you write, review, understand and debug code with free AI models — and then checks the result by actually running it in your browser: examples are executed, edge-case inputs are thrown at your function, and complexity claims are timed.
 
-> Live site: _coming soon_ (frontend on Vercel, API on Railway)
+> **Live site:** https://code-forge-ai-code-studio.vercel.app — the studio is at [/app](https://code-forge-ai-code-studio.vercel.app/app). Frontend on Vercel, API on Railway.
 
 ---
 
