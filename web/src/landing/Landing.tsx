@@ -138,7 +138,7 @@ export default function Landing() {
           <Clouds />
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_30%,transparent_0%,rgba(7,38,70,.18)_100%)]" />
 
-          <div className="relative z-10 mx-auto max-w-[920px]">
+          <div className="relative z-10 mx-auto w-full min-w-0 max-w-[920px]">
             <p className="cf-fade-in mb-7 text-xs font-semibold uppercase tracking-[0.25em] text-white/75">The calm way to build with AI</p>
             <h1 className="font-display text-[clamp(4rem,10vw,7.4rem)] leading-[.87] tracking-[-0.075em]">
               {['Describe it.', 'Review it.', 'Ship it.'].map((line, i) => (
@@ -170,7 +170,7 @@ export default function Landing() {
 
         {/* ── Features ── */}
         <section id="features" className="mx-auto max-w-[1240px] px-5 pb-28 pt-32 sm:px-8 sm:pb-40 sm:pt-44 lg:px-10">
-          <div className="grid gap-14 lg:grid-cols-[180px_1fr] lg:gap-24">
+          <div className="grid grid-cols-1 gap-14 lg:grid-cols-[180px_1fr] lg:gap-24">
             <div className="lg:sticky lg:top-32 lg:h-fit">
               <p className="mb-5 text-[10px] font-bold uppercase tracking-[.22em] text-black/35">Inside CodeForge</p>
               <div className="flex gap-4 overflow-x-auto pb-2 text-xs font-semibold uppercase tracking-[.13em] lg:block lg:space-y-6 lg:pb-0">
@@ -194,7 +194,7 @@ export default function Landing() {
                     <span className="text-sm font-semibold">Generated, then run</span>
                     <span className="rounded-full bg-[#edf6fd] px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-[#267bbb]">Generate</span>
                   </div>
-                  <div className="grid gap-5 md:grid-cols-2">
+                  <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
                     <div className="rounded-xl bg-[#f4f4f1] p-5">
                       <p className="mb-3 text-[10px] font-bold uppercase tracking-widest text-black/35">Prompt</p>
                       <p className="text-sm leading-6 text-black/65">“A function that returns the n-th Fibonacci number, fast for large n. Print the first ten.”</p>
@@ -224,13 +224,13 @@ export default function Landing() {
                   <h2 className="font-display max-w-[700px] text-5xl leading-[.95] tracking-[-.055em] sm:text-7xl">Paste code, get a structured audit.</h2>
                   <p className="mt-7 max-w-[560px] text-base leading-7 text-black/55">Bugs, security, performance and style — ordered by severity, with the fix beside each finding. Rewrites come with a line-by-line diff against your code, and one click carries the improved version into Refactor or Write tests.</p>
                 </div>
-                <div className="cf-reveal mt-9 grid gap-4 lg:grid-cols-[1fr_1fr]">
+                <div className="cf-reveal mt-9 grid grid-cols-1 gap-4 lg:grid-cols-[1fr_1fr]">
                   <div className="rounded-[18px] border border-black/10 bg-white p-5 sm:p-7">
                     <div className="mb-6 flex items-center justify-between">
                       <span className="text-sm font-semibold">Review summary</span>
                       <span className="text-xs text-black/40">4 findings</span>
                     </div>
-                    <div className="grid gap-3">
+                    <div className="grid grid-cols-1 gap-3">
                       <ReviewItem icon="🐛" label="Bugs" text="1 potential issue" color="bg-[#fff1ed] text-[#be634f]" />
                       <ReviewItem icon="🔒" label="Security" text="SQL injection on line 2" color="bg-[#fff1ed] text-[#be634f]" />
                       <ReviewItem icon="⚡" label="Performance" text="2 suggestions" color="bg-[#fff8df] text-[#a27822]" />
@@ -265,7 +265,7 @@ export default function Landing() {
                   <h2 className="font-display max-w-[700px] text-5xl leading-[.95] tracking-[-.055em] sm:text-7xl">See the shape of your code.</h2>
                   <p className="mt-7 max-w-[560px] text-base leading-7 text-black/55">Turn code into a flowchart, sequence or class diagram, exportable as SVG. Describe a pattern and get a regex with a live tester — matches highlight as you type, and runaway patterns are stopped before they freeze the tab.</p>
                 </div>
-                <div className="cf-reveal mt-9 grid gap-4 lg:grid-cols-2">
+                <div className="cf-reveal mt-9 grid grid-cols-1 gap-4 lg:grid-cols-2">
                   <div className="rounded-[18px] bg-[#171b20] p-5 sm:p-7">
                     <p className="mb-5 text-[10px] font-bold uppercase tracking-widest text-[#79b8e4]">Diagram · Flowchart</p>
                     <div className="flex flex-col items-center gap-2 text-[11px] text-[#e6edf2]">
@@ -307,7 +307,7 @@ export default function Landing() {
 
         {/* ── Why ── */}
         <section id="streaming" className="scroll-mt-20 border-y border-black/10 bg-white">
-          <div className="mx-auto grid max-w-[1240px] gap-16 px-5 py-28 sm:px-8 sm:py-36 lg:grid-cols-[.8fr_1.2fr] lg:items-center lg:px-10">
+          <div className="mx-auto grid grid-cols-1 max-w-[1240px] gap-16 px-5 py-28 sm:px-8 sm:py-36 lg:grid-cols-[.8fr_1.2fr] lg:items-center lg:px-10">
             <div className="cf-reveal">
               <p className="text-xs font-bold uppercase tracking-[.2em] text-black/35">Why CodeForge</p>
               <h2 className="mt-5 font-display text-5xl leading-[.95] tracking-[-.055em] sm:text-7xl">Free models,<br />without the fine print.</h2>
@@ -316,7 +316,7 @@ export default function Landing() {
                 Try it now <ArrowRight className="ml-1 inline transition-transform group-hover:translate-x-1" size={15} />
               </a>
             </div>
-            <div className="cf-reveal grid border border-black/10 sm:grid-cols-2">
+            <div className="cf-reveal grid grid-cols-1 border border-black/10 sm:grid-cols-2">
               {why.map((w, index) => (
                 <div key={w.title} className={`group p-6 transition-colors duration-300 hover:bg-[#fafaf8] sm:p-8 ${index < 2 ? 'border-b' : ''} ${index % 2 === 0 ? 'sm:border-r' : ''} border-black/10`}>
                   <div className="mb-10 flex h-9 w-9 items-center justify-center rounded-lg bg-[#f1f1ee] text-[#267bbb] transition duration-300 group-hover:-translate-y-1 group-hover:rotate-[-6deg] group-hover:bg-[#267bbb] group-hover:text-white">
@@ -350,7 +350,7 @@ export default function Landing() {
 
         {/* ── FAQ ── */}
         <section id="faq" className="scroll-mt-20 bg-[#efefeb] px-5 py-28 sm:px-8 sm:py-36">
-          <div className="mx-auto grid max-w-[1080px] gap-14 lg:grid-cols-[.75fr_1.25fr] lg:gap-24">
+          <div className="mx-auto grid grid-cols-1 max-w-[1080px] gap-14 lg:grid-cols-[.75fr_1.25fr] lg:gap-24">
             <div className="cf-reveal">
               <p className="text-xs font-bold uppercase tracking-[.2em] text-black/35">FAQ</p>
               <h2 className="mt-5 font-display text-5xl leading-[.95] tracking-[-.055em] sm:text-7xl">Questions<br />& answers.</h2>
@@ -379,7 +379,7 @@ export default function Landing() {
 
       <footer className="bg-[#0b0d10] px-5 py-16 text-white sm:px-8 sm:py-20">
         <div className="mx-auto max-w-[1240px]">
-          <div className="grid gap-14 border-b border-white/10 pb-14 sm:grid-cols-2 lg:grid-cols-[1.5fr_1fr_1fr]">
+          <div className="grid grid-cols-1 gap-14 border-b border-white/10 pb-14 sm:grid-cols-2 lg:grid-cols-[1.5fr_1fr_1fr]">
             <div>
               <a href="#top" className="flex items-center gap-2.5 text-lg font-semibold tracking-[-.03em]"><Sparkles size={19} /> CodeForge</a>
               <p className="mt-5 max-w-[270px] text-sm leading-6 text-white/45">A free AI code workbench — where answers get run, not just read.</p>

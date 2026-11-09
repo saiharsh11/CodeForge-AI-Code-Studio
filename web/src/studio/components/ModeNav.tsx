@@ -27,30 +27,30 @@ export function ModeNav({ active, live, onSelect }: Props) {
   }, [open]);
 
   return (
-    <nav ref={root} aria-label="Modes" className="order-last flex w-full gap-0.5 rounded-full bg-[#0b2f55]/45 p-1 text-xs font-semibold ring-1 ring-white/10 backdrop-blur-md lg:order-none lg:mx-auto lg:w-auto">
+    <nav ref={root} aria-label="Modes" className="relative order-last flex w-full gap-0.5 rounded-full bg-[#0b2f55]/45 p-1 text-xs font-semibold ring-1 ring-white/10 backdrop-blur-md lg:order-none lg:mx-auto lg:w-auto">
       {GROUPS.map((g) => {
         const isActive = g.id === activeGroup;
         const current = isActive ? modeById(active) : null;
         const Icon = current?.icon;
         const anyLive = g.modes.some(live);
         return (
-          <div key={g.id} className="relative min-w-0 flex-1 lg:flex-none">
+          <div key={g.id} className="min-w-0 flex-auto lg:relative lg:flex-none">
             <button
               onClick={() => setOpen(open === g.id ? null : g.id)}
               aria-expanded={open === g.id}
               aria-haspopup="menu"
-              className={`flex w-full items-center justify-center gap-1.5 rounded-full px-3 py-1.5 transition ${isActive ? 'bg-white text-[#236aa3] shadow-[0_4px_14px_rgba(7,38,70,.25)]' : 'text-white/90 [text-shadow:0_1px_2px_rgba(7,38,70,.45)] hover:bg-white/15 hover:text-white'}`}
+              className={`flex w-full items-center justify-center gap-1.5 rounded-full px-2 py-1.5 transition sm:px-3 ${isActive ? 'bg-white text-[#236aa3] shadow-[0_4px_14px_rgba(7,38,70,.25)]' : 'text-white/90 [text-shadow:0_1px_2px_rgba(7,38,70,.45)] hover:bg-white/15 hover:text-white'}`}
             >
               {Icon && <Icon size={13} className="shrink-0" />}
               <span className="truncate">
                 {current ? <><span className="hidden font-medium text-[#236aa3]/60 sm:inline">{g.title} · </span>{current.title}</> : g.title}
               </span>
               {anyLive && <span className={`h-1.5 w-1.5 shrink-0 animate-pulse rounded-full ${isActive ? 'bg-[#267bbb]' : 'bg-white'}`} />}
-              <ChevronDown size={11} className={`shrink-0 opacity-60 transition-transform ${open === g.id ? 'rotate-180' : ''}`} />
+              <ChevronDown size={11} className={`hidden shrink-0 opacity-60 transition-transform sm:block ${open === g.id ? 'rotate-180' : ''}`} />
             </button>
 
             {open === g.id && (
-              <div role="menu" className="cf-fade-in absolute left-1/2 z-40 mt-2 w-[min(280px,calc(100vw-1.5rem))] -translate-x-1/2 overflow-hidden rounded-2xl border border-black/10 bg-white p-1.5 text-[#151719] shadow-[0_24px_60px_rgba(20,45,70,.22)]">
+              <div role="menu" className="cf-fade-in absolute inset-x-0 top-full z-40 mt-2 overflow-hidden lg:inset-x-auto lg:left-1/2 lg:top-auto lg:w-[280px] lg:-translate-x-1/2 rounded-2xl border border-black/10 bg-white p-1.5 text-[#151719] shadow-[0_24px_60px_rgba(20,45,70,.22)]">
                 <p className="px-3 pb-1 pt-2 text-[10px] font-bold uppercase tracking-[.18em] text-black/35">{g.title}</p>
                 {g.modes.map((id) => {
                   const m = modeById(id);
