@@ -3,7 +3,7 @@ import { Cpu, Sparkles } from 'lucide-react';
 import { fetchModels, shortName } from '@/studio/lib/api';
 
 // Shown until (or if) the live list from /api/models arrives — must match the models actually offered.
-const FALLBACK = ['North Mini Code', 'Nemotron 3 Ultra'];
+const FALLBACK = ['North Mini Code', 'Nemotron 3 Ultra', 'Gemma 4 31B', 'Gemma 4 26B A4B'];
 
 export function ModelTicker() {
   const [names, setNames] = useState(FALLBACK);

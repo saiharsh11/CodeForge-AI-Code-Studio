@@ -59,10 +59,13 @@ Most AI tools hand you code and hope it works. These modes test the answer inste
 
 ### Models
 
-Two free models from [OpenRouter](https://openrouter.ai), chosen after testing every mode against them:
+Four free models from [OpenRouter](https://openrouter.ai):
 
 - **Cohere North Mini Code** (default)
 - **NVIDIA Nemotron 3 Ultra**
+- **Google Gemma 4 31B** and **Gemma 4 26B**
+
+North Mini Code and Nemotron 3 Ultra passed every mode in real tests. The Gemma models' free tier was frequently busy during testing; when a model is busy, the request moves to another one and the studio says so.
 
 The server only offers OpenRouter's official `:free` variants from established publishers, skips any model scheduled to be retired within 60 days, and skips models whose description says prompts are retained. If the curated models disappear, it falls back to anything that passes those rules. The list is configurable with `MODEL_ALLOWLIST`.
 
@@ -77,7 +80,7 @@ Enforced by the API, so they also apply to anyone calling it directly:
 - A server-side policy, prepended to every model request, that treats pasted code as data rather than instructions and keeps the assistant to programming help.
 - A narrow keyword pre-check that refuses obvious malware requests before any model is called.
 
-The deterministic checks (limits, caps, CORS) are reliable; the policy and keyword check reduce risk but are not guarantees. The OpenRouter key itself carries a second layer: a $0 budget, a two-model allow-list, and redaction of API keys, card numbers and similar secrets.
+The deterministic checks (limits, caps, CORS) are reliable; the policy and keyword check reduce risk but are not guarantees. The OpenRouter key itself carries a second layer: a $0 budget, a model allow-list, and redaction of API keys, card numbers and similar secrets.
 
 ### Privacy
 

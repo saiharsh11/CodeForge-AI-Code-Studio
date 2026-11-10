@@ -45,12 +45,17 @@ let modelCache = { at: 0, models: [] };
 //     to everything that passes the hard rules (and log a warning), never to nothing.
 const TRUSTED_PUBLISHERS = (process.env.TRUSTED_PUBLISHERS || 'google,nvidia,cohere,meta-llama,mistralai,microsoft,openai,ibm-granite')
   .split(',').map((s) => s.trim()).filter(Boolean);
-// Chosen from real tests (2026-11-09): both passed every format check; the Gemma free
-// endpoints were busy on 15 of 15 attempts, so they're left out. Keep this list in sync
-// with the "Model & provider access" guardrail on the OpenRouter key.
+// Order matters: the first model is the default, and busy models fall back to the others.
+// North Mini Code and Nemotron 3 Ultra passed every format check in real tests
+// (2026-11-09). The Gemma 4 models are included for choice and because they support
+// zero-data-retention endpoints, but their free tier was often busy in testing, so they
+// come last. Keep this list in sync with the "Model & provider access" guardrail on the
+// OpenRouter key, or requests to the missing models will be rejected.
 const MODEL_ALLOWLIST = (process.env.MODEL_ALLOWLIST || [
   'cohere/north-mini-code:free',
   'nvidia/nemotron-3-ultra-550b-a55b:free',
+  'google/gemma-4-31b-it:free',
+  'google/gemma-4-26b-a4b-it:free',
 ].join(',')).split(',').map((s) => s.trim()).filter(Boolean);
 const MIN_DAYS_LEFT = 60;
 const RETENTION_WARNING = /(prompts?|inputs?|outputs?|data)[^.]{0,60}\b(retain|retained|logged|stored|used (for|to) (train|improve))|\b(may|will) be used (for|to) (train|improve)/i;
