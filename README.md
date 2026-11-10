@@ -65,7 +65,7 @@ Four free models from [OpenRouter](https://openrouter.ai):
 - **NVIDIA Nemotron 3 Ultra**
 - **Google Gemma 4 31B** and **Gemma 4 26B**
 
-North Mini Code and Nemotron 3 Ultra passed every mode in real tests. The Gemma models' free tier was frequently busy during testing; when a model is busy, the request moves to another one and the studio says so.
+North Mini Code and Nemotron 3 Ultra passed every mode in real tests. The Gemma models' free tier was frequently busy during testing; when a model is busy, the request moves to another one and the studio says so. A model that was refused in the last minute or so is marked "busy right now" in the model picker.
 
 The server only offers OpenRouter's official `:free` variants from established publishers, skips any model scheduled to be retired within 60 days, and skips models whose description says prompts are retained. If the curated models disappear, it falls back to anything that passes those rules. The list is configurable with `MODEL_ALLOWLIST`.
 

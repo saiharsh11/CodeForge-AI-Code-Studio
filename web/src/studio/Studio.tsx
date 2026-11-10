@@ -140,6 +140,10 @@ export default function Studio() {
     return () => { alive = false; };
   }, [reload]);
   const retryModels = () => { setModelStatus('loading'); setReload((n) => n + 1); };
+  // Refresh the "busy right now" markers whenever the picker opens.
+  const refreshBusy = () => {
+    fetchModels().then((data) => data.models.length && setModels(data.models), () => {});
+  };
 
   const chooseModel = (ref: ModelRef) => {
     setModelRef(ref);
@@ -449,7 +453,7 @@ export default function Studio() {
           </a>
           <ModeNav active={modeId} live={(id) => sessions[id].some((t) => t.streaming)} onSelect={setModeId} />
           <div className="ml-auto flex shrink-0 items-center gap-2 lg:ml-0">
-            <ModelPicker models={models} selected={selected} status={modelStatus} onSelect={chooseModel} onRetry={retryModels} />
+            <ModelPicker models={models} selected={selected} status={modelStatus} onSelect={chooseModel} onRetry={retryModels} onOpen={refreshBusy} />
             <a href="https://github.com/saiharsh11/CodeForge-AI-Code-Studio" target="_blank" rel="noopener noreferrer" className="hidden rounded-full border border-white/30 bg-white/10 p-1.5 backdrop-blur-sm transition hover:bg-white/20 sm:block" aria-label="GitHub">
               <Github size={14} />
             </a>

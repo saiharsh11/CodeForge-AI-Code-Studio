@@ -5,6 +5,8 @@ export interface ModelInfo {
   model: string;
   name: string;
   context: number | null;
+  /** Refused recently (e.g. rate-limited upstream): requests will likely fall back to another model. */
+  busy?: boolean;
 }
 
 export interface ModelRef {

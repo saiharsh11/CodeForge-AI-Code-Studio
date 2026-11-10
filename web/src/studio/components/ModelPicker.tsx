@@ -13,9 +13,10 @@ interface Props {
   status: 'loading' | 'ready' | 'error';
   onSelect: (ref: ModelRef) => void;
   onRetry: () => void;
+  onOpen?: () => void;
 }
 
-export function ModelPicker({ models, selected, status, onSelect, onRetry }: Props) {
+export function ModelPicker({ models, selected, status, onSelect, onRetry, onOpen }: Props) {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState('');
   const root = useRef<HTMLDivElement>(null);
@@ -54,10 +55,10 @@ export function ModelPicker({ models, selected, status, onSelect, onRetry }: Pro
     <div ref={root} className="relative">
       <button
         disabled={status === 'loading'}
-        onClick={() => setOpen((o) => !o)}
+        onClick={() => { if (!open) onOpen?.(); setOpen(!open); }}
         className="flex max-w-[260px] items-center gap-2 rounded-md border border-[#267bbb]/30 bg-[#edf6fd] px-3 py-1.5 text-[11px] font-medium text-[#236aa3] transition hover:border-[#267bbb]/60 disabled:opacity-60"
       >
-        <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-[#56aa75]" />
+        <span className={`h-1.5 w-1.5 shrink-0 rounded-full ${selected?.busy ? 'bg-[#e0a43a]' : 'bg-[#56aa75]'}`} title={selected?.busy ? 'Busy right now: another model may answer' : undefined} />
         <span className="truncate">
           {status === 'loading' ? 'Loading models…' : selected ? `${PROVIDER_LABEL[selected.provider]} · ${shortName(selected)}` : 'Choose a model'}
         </span>
@@ -98,6 +99,11 @@ export function ModelPicker({ models, selected, status, onSelect, onRetry }: Pro
                         <span className={`block truncate text-[13px] font-medium ${active ? 'text-[#236aa3]' : 'text-[#151719]'}`}>{shortName(m)}</span>
                         <span className="block truncate font-mono text-[10px] text-black/35">{m.model}</span>
                       </span>
+                      {m.busy && (
+                        <span className="shrink-0 rounded-full bg-[#fdf3e1] px-1.5 py-px text-[9px] font-bold uppercase tracking-wider text-[#a8741c]" title="Refused in the last minute or so. If you pick it, another model will probably answer.">
+                          Busy right now
+                        </span>
+                      )}
                       {m.context && <span className="shrink-0 text-[10px] text-black/35">{ctx(m.context)}</span>}
                       {active && <Check size={14} className="shrink-0 text-[#267bbb]" />}
                     </button>

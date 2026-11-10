@@ -131,7 +131,10 @@ app.get('/api/models', limitReads, async (req, res) => {
   try {
     const models = await getModels();
     const def = pickDefault(models);
-    res.json({ models, default: def ? { provider: def.provider, model: def.model } : null });
+    // busy: this model was refused (e.g. rate-limited upstream) in the last minute or so,
+    // so a request to it will most likely be handed to another model.
+    const withBusy = models.map((m) => ({ ...m, busy: coolingDown(modelKeyOf(m.provider, m.model)) }));
+    res.json({ models: withBusy, default: def ? { provider: def.provider, model: def.model } : null });
   } catch (err) {
     console.error('[Models]', err.message);
     res.status(502).json({ error: 'Could not load the model list.' });
