@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 300" width="1280" height="300" role="img" aria-label="Architecture: your browser talks to the CodeForge API on Railway, which calls free models on OpenRouter and streams the answer back.">
+  <title>CodeForge architecture</title>
+  <style>text { font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; } @media (prefers-reduced-motion: reduce) { * { animation: none !important; } }</style>
+  <rect width="1280" height="300" rx="20" fill="#0f1216"/>
+  <rect x=".5" y=".5" width="1279" height="299" rx="19.5" fill="none" stroke="#fff" stroke-opacity=".08"/>
+  <text x="40" y="46" font-size="12" font-weight="700" letter-spacing="2.4" fill="#79b8e4">HOW A REQUEST TRAVELS</text>
+  
+  <path id="req0" d="M386 132 H464" stroke="#fff" stroke-opacity=".16" stroke-dasharray="4 6"/>
+  <path id="res0" d="M464 168 H386" stroke="#fff" stroke-opacity=".16" stroke-dasharray="4 6"/>
+  <circle r="4.5" fill="#79b8e4"><animateMotion dur="2.4s" begin="0s" repeatCount="indefinite"><mpath href="#req0"/></animateMotion></circle>
+  <circle r="4.5" fill="#7cc597"><animateMotion dur="2.4s" begin="1.2s" repeatCount="indefinite"><mpath href="#res0"/></animateMotion></circle>
+  <path id="req1" d="M816 132 H894" stroke="#fff" stroke-opacity=".16" stroke-dasharray="4 6"/>
+  <path id="res1" d="M894 168 H816" stroke="#fff" stroke-opacity=".16" stroke-dasharray="4 6"/>
+  <circle r="4.5" fill="#79b8e4"><animateMotion dur="2.4s" begin="1.2s" repeatCount="indefinite"><mpath href="#req1"/></animateMotion></circle>
+  <circle r="4.5" fill="#7cc597"><animateMotion dur="2.4s" begin="2.4s" repeatCount="indefinite"><mpath href="#res1"/></animateMotion></circle>
+  <text x="425" y="120" text-anchor="middle" font-size="11" fill="#fff" fill-opacity=".4">request</text>
+  <text x="425" y="190" text-anchor="middle" font-size="11" fill="#fff" fill-opacity=".4">SSE stream</text>
+  <text x="855" y="120" text-anchor="middle" font-size="11" fill="#fff" fill-opacity=".4">+ policy</text>
+  <text x="855" y="190" text-anchor="middle" font-size="11" fill="#fff" fill-opacity=".4">tokens</text>
+  
+  <g transform="translate(40 70)">
+    <rect width="340" height="160" rx="16" fill="#151a20" stroke="#fff" stroke-opacity=".09"/>
+    <rect x="22" y="24" width="8" height="8" rx="4" fill="#7cc597"/>
+    <text x="40" y="33" font-size="12" font-weight="700" letter-spacing="1.6" fill="#7cc597">VERCEL · REACT</text>
+    <text x="22" y="72" font-size="24" font-weight="800" fill="#fff">Your browser</text>
+    <text x="22" y="108" font-size="14" fill="#fff" fill-opacity=".62">Runs and checks the code</text>
+    <text x="22" y="132" font-size="14" fill="#fff" fill-opacity=".62">JS/TS in Web Workers, Python in Pyodide</text>
+  </g>
+  <g transform="translate(470 70)">
+    <rect width="340" height="160" rx="16" fill="#151a20" stroke="#fff" stroke-opacity=".09"/>
+    <rect x="22" y="24" width="8" height="8" rx="4" fill="#79b8e4"/>
+    <text x="40" y="33" font-size="12" font-weight="700" letter-spacing="1.6" fill="#79b8e4">RAILWAY · EXPRESS</text>
+    <text x="22" y="72" font-size="24" font-weight="800" fill="#fff">CodeForge API</text>
+    <text x="22" y="108" font-size="14" fill="#fff" fill-opacity=".62">Rate limits · policy · model fallback</text>
+    <text x="22" y="132" font-size="14" fill="#fff" fill-opacity=".62">Streams through, stores nothing</text>
+  </g>
+  <g transform="translate(900 70)">
+    <rect width="340" height="160" rx="16" fill="#151a20" stroke="#fff" stroke-opacity=".09"/>
+    <rect x="22" y="24" width="8" height="8" rx="4" fill="#e7c47a"/>
+    <text x="40" y="33" font-size="12" font-weight="700" letter-spacing="1.6" fill="#e7c47a">FREE MODELS</text>
+    <text x="22" y="72" font-size="24" font-weight="800" fill="#fff">OpenRouter</text>
+    <text x="22" y="108" font-size="14" fill="#fff" fill-opacity=".62">North Mini Code · Nemotron 3 Ultra</text>
+    <text x="22" y="132" font-size="14" fill="#fff" fill-opacity=".62">Gemma 4 31B · Gemma 4 26B</text>
+  </g>
+  <text x="40" y="272" font-size="13" fill="#fff" fill-opacity=".45">Running and checking code happens in the page. Only AI requests go through the API to the model provider.</text>
+</svg>

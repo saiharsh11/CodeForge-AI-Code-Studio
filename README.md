@@ -1,12 +1,28 @@
-# CodeForge
+<p align="center">
+  <a href="https://code-forge-ai-code-studio.vercel.app"><img src="docs/readme/hero.svg" alt="CodeForge — write, review and debug code with AI, then run it to check." width="100%"></a>
+</p>
 
-**A free AI code workbench where answers get run, not just read.**
+<p align="center">
+  <a href="https://code-forge-ai-code-studio.vercel.app/app"><b>Open the studio →</b></a>
+  &nbsp;·&nbsp; <a href="https://code-forge-ai-code-studio.vercel.app">Landing page</a>
+  &nbsp;·&nbsp; <a href="#running-locally">Run it locally</a>
+</p>
 
-CodeForge helps you write, review, understand and debug code with free AI models — and then checks the result by actually running it in your browser: examples are executed, edge-case inputs are thrown at your function, and complexity claims are timed.
-
-> **Live site:** https://code-forge-ai-code-studio.vercel.app — the studio is at [/app](https://code-forge-ai-code-studio.vercel.app/app). Frontend on Vercel, API on Railway.
+<p align="center">
+  <img alt="React 19" src="https://img.shields.io/badge/React-19-61dafb?style=flat-square&logo=react&logoColor=white">
+  <img alt="TypeScript" src="https://img.shields.io/badge/TypeScript-6-3178c6?style=flat-square&logo=typescript&logoColor=white">
+  <img alt="Node 26" src="https://img.shields.io/badge/Node.js-26-5fa04e?style=flat-square&logo=nodedotjs&logoColor=white">
+  <img alt="Express 5" src="https://img.shields.io/badge/Express-5-111?style=flat-square&logo=express&logoColor=white">
+  <img alt="Pyodide" src="https://img.shields.io/badge/Python-Pyodide-3776ab?style=flat-square&logo=python&logoColor=white">
+</p>
 
 ---
+
+Most AI tools hand you code and hope it works. **CodeForge runs it.** It helps you write, review, understand and debug code with free AI models, then checks the answer in your own browser: your examples are executed, edge-case inputs are thrown at your function, and complexity claims are timed.
+
+<p align="center">
+  <img src="docs/readme/check.svg" alt="Illustration of the Big-O check: the model claims O(n), the browser times the code and finds O(n²)" width="100%">
+</p>
 
 ## What it does
 
@@ -39,6 +55,13 @@ Most AI tools hand you code and hope it works. These modes test the answer inste
 
 ## Architecture
 
+<p align="center">
+  <img src="docs/readme/flow.svg" alt="Browser → CodeForge API (Railway) → OpenRouter, answers streamed back" width="100%">
+</p>
+
+<details>
+<summary>Text version</summary>
+
 ```
  Browser (web/ — React + Vite, hosted on Vercel)
  ├─ Landing page  /
@@ -56,6 +79,8 @@ Most AI tools hand you code and hope it works. These modes test the answer inste
           ▼
  OpenRouter → model providers
 ```
+
+</details>
 
 ### Models
 
@@ -90,7 +115,7 @@ CodeForge has no accounts and does not save code or prompts. The API streams eac
 
 ## Running locally
 
-Requirements: Node.js 20+ and a free [OpenRouter API key](https://openrouter.ai/keys).
+Requirements: Node.js 26 and a free [OpenRouter API key](https://openrouter.ai/keys).
 
 ```bash
 # 1. API
